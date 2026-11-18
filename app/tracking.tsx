@@ -1,18 +1,18 @@
+import * as Location from "expo-location";
+import { useLocalSearchParams } from "expo-router";
+import { off, onValue, ref } from "firebase/database";
 import { useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-  SafeAreaView,
-  Alert,
+    ActivityIndicator,
+    Alert,
+    SafeAreaView,
+    StyleSheet,
+    Text,
+    View,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
-import * as Location from "expo-location";
-import { ref, onValue, off } from "firebase/database";
-import { useLocalSearchParams } from "expo-router";
 
-import { db } from "../../F2H/app/firebase/firebaseConfig"; // ✅ FIXED PATH
+import { db } from "../firebase/firebaseConfig"; // ✅ FIXED PATH
 
 /* 🌿 THEME */
 const COLORS = {
@@ -39,7 +39,7 @@ export default function TrackingScreen() {
     if (status !== "granted") {
       Alert.alert(
         "Permission required",
-        "Location permission is needed to track your order"
+        "Location permission is needed to track your order",
       );
       setLoading(false);
       return;
@@ -92,14 +92,8 @@ export default function TrackingScreen() {
       <MapView
         style={styles.map}
         initialRegion={{
-          latitude:
-            riderLocation?.lat ||
-            userLocation?.latitude ||
-            13.0827,
-          longitude:
-            riderLocation?.lng ||
-            userLocation?.longitude ||
-            80.2707,
+          latitude: riderLocation?.lat || userLocation?.latitude || 13.0827,
+          longitude: riderLocation?.lng || userLocation?.longitude || 80.2707,
           latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         }}
@@ -118,20 +112,14 @@ export default function TrackingScreen() {
 
         {/* 🧍 CUSTOMER */}
         {userLocation && (
-          <Marker
-            coordinate={userLocation}
-            title="You"
-            pinColor="green"
-          />
+          <Marker coordinate={userLocation} title="You" pinColor="green" />
         )}
       </MapView>
 
       {/* 🧾 INFO CARD */}
       <View style={styles.infoCard}>
         <Text style={styles.infoTitle}>Order is on the way</Text>
-        <Text style={styles.infoSub}>
-          Live rider tracking enabled 📍
-        </Text>
+        <Text style={styles.infoSub}>Live rider tracking enabled 📍</Text>
       </View>
     </SafeAreaView>
   );

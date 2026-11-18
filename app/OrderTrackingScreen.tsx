@@ -3,18 +3,14 @@ import { useLocalSearchParams } from "expo-router";
 import { off, onValue, ref } from "firebase/database";
 import { useEffect, useRef, useState } from "react";
 import {
-  ActivityIndicator,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
+    ActivityIndicator,
+    SafeAreaView,
+    StyleSheet,
+    Text,
+    View,
 } from "react-native";
-import MapView, {
-  AnimatedRegion,
-  Marker,
-  Polyline,
-} from "react-native-maps";
-import { db } from "../../F2H/app/firebase/firebaseConfig";
+import MapView, { AnimatedRegion, Marker, Polyline } from "react-native-maps";
+import { db } from "../firebase/firebaseConfig";
 
 const GOOGLE_API_KEY = "AIzaSyBDkpmL3tKC-rtjFo7V4c4bHusK52hpcBE";
 
@@ -31,7 +27,7 @@ export default function TrackingScreen() {
       longitude: 0,
       latitudeDelta: 0.01,
       longitudeDelta: 0.01,
-    })
+    }),
   ).current;
 
   const [customerLocation, setCustomerLocation] = useState<any>(null);
@@ -61,7 +57,7 @@ export default function TrackingScreen() {
     riderLat: number,
     riderLng: number,
     custLat: number,
-    custLng: number
+    custLng: number,
   ) => {
     const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${riderLat},${riderLng}&destination=${custLat},${custLng}&key=${GOOGLE_API_KEY}`;
 
@@ -69,9 +65,7 @@ export default function TrackingScreen() {
     const json = await res.json();
 
     if (json.routes.length) {
-      const points = decodePolyline(
-        json.routes[0].overview_polyline.points
-      );
+      const points = decodePolyline(json.routes[0].overview_polyline.points);
       setRouteCoords(points);
 
       setDistance(json.routes[0].legs[0].distance.text);
@@ -93,18 +87,20 @@ export default function TrackingScreen() {
 
       const { lat, lng } = snap.val();
 
-      riderMarker.timing({
-        latitude: lat,
-        longitude: lng,
-        duration: 1000,
-        useNativeDriver: false,
-      }).start();
+      riderMarker
+        .timing({
+          latitude: lat,
+          longitude: lng,
+          duration: 1000,
+          useNativeDriver: false,
+        })
+        .start();
 
       fetchRoute(
         lat,
         lng,
         customerLocation.latitude,
-        customerLocation.longitude
+        customerLocation.longitude,
       );
 
       mapRef.current?.animateToRegion(
@@ -114,7 +110,7 @@ export default function TrackingScreen() {
           latitudeDelta: 0.02,
           longitudeDelta: 0.02,
         },
-        500
+        500,
       );
 
       setLoading(false);
@@ -159,11 +155,7 @@ export default function TrackingScreen() {
         <Marker.Animated coordinate={riderMarker} />
 
         {/* 🧍 CUSTOMER */}
-        <Marker
-          coordinate={customerLocation}
-          pinColor="green"
-          title="You"
-        />
+        <Marker coordinate={customerLocation} pinColor="green" title="You" />
 
         {/* 🛣️ ROUTE */}
         {routeCoords.length > 0 && (

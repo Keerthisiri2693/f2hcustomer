@@ -1,23 +1,20 @@
+import { router } from "expo-router";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { ref, set } from "firebase/database";
 import { useState } from "react";
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  StatusBar,
-  KeyboardAvoidingView,
-  Platform,
-  SafeAreaView,
-  Alert,
+    Alert,
+    KeyboardAvoidingView,
+    Platform,
+    SafeAreaView,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
-import { TextInput, Button, ActivityIndicator } from "react-native-paper";
-import { router } from "expo-router";
-import {
-  createUserWithEmailAndPassword,
-  updateProfile,
-} from "firebase/auth";
-import { ref, set } from "firebase/database";
-import { auth, db } from "../../F2H/app/firebase/firebaseConfig"; // ✅ FIXED PATH
+import { ActivityIndicator, Button, TextInput } from "react-native-paper";
+import { auth, db } from "../firebase/firebaseConfig"; // ✅ FIXED PATH
 
 /* ❤️ VALENTINE THEME */
 const V = {
@@ -47,10 +44,7 @@ export default function CreateAccountScreen() {
     }
 
     if (password.length < 6) {
-      Alert.alert(
-        "Weak password",
-        "Password must be at least 6 characters"
-      );
+      Alert.alert("Weak password", "Password must be at least 6 characters");
       return;
     }
 
@@ -66,7 +60,7 @@ export default function CreateAccountScreen() {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email.trim(),
-        password
+        password,
       );
 
       const user = userCredential.user;
@@ -136,12 +130,7 @@ export default function CreateAccountScreen() {
             style={styles.input}
             outlineColor={V.BORDER}
             activeOutlineColor={V.PRIMARY}
-            left={
-              <TextInput.Icon
-                icon="account-outline"
-                color={V.PRIMARY}
-              />
-            }
+            left={<TextInput.Icon icon="account-outline" color={V.PRIMARY} />}
           />
 
           {/* EMAIL */}
@@ -155,12 +144,7 @@ export default function CreateAccountScreen() {
             style={styles.input}
             outlineColor={V.BORDER}
             activeOutlineColor={V.PRIMARY}
-            left={
-              <TextInput.Icon
-                icon="email-outline"
-                color={V.PRIMARY}
-              />
-            }
+            left={<TextInput.Icon icon="email-outline" color={V.PRIMARY} />}
           />
 
           {/* PASSWORD */}
@@ -173,12 +157,7 @@ export default function CreateAccountScreen() {
             style={styles.input}
             outlineColor={V.BORDER}
             activeOutlineColor={V.PRIMARY}
-            left={
-              <TextInput.Icon
-                icon="lock-outline"
-                color={V.PRIMARY}
-              />
-            }
+            left={<TextInput.Icon icon="lock-outline" color={V.PRIMARY} />}
             right={
               <TextInput.Icon
                 icon={securePass ? "eye-off-outline" : "eye-outline"}
@@ -198,19 +177,12 @@ export default function CreateAccountScreen() {
             outlineColor={V.BORDER}
             activeOutlineColor={V.PRIMARY}
             left={
-              <TextInput.Icon
-                icon="lock-check-outline"
-                color={V.PRIMARY}
-              />
+              <TextInput.Icon icon="lock-check-outline" color={V.PRIMARY} />
             }
             right={
               <TextInput.Icon
-                icon={
-                  secureConfirm ? "eye-off-outline" : "eye-outline"
-                }
-                onPress={() =>
-                  setSecureConfirm(!secureConfirm)
-                }
+                icon={secureConfirm ? "eye-off-outline" : "eye-outline"}
+                onPress={() => setSecureConfirm(!secureConfirm)}
               />
             }
           />
@@ -223,21 +195,13 @@ export default function CreateAccountScreen() {
             labelStyle={styles.createText}
             disabled={loading}
           >
-            {loading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              "Create Account"
-            )}
+            {loading ? <ActivityIndicator color="#fff" /> : "Create Account"}
           </Button>
 
           {/* LOGIN LINK */}
           <View style={styles.loginRow}>
-            <Text style={styles.loginText}>
-              Already have an account?
-            </Text>
-            <TouchableOpacity
-              onPress={() => router.replace("/login")}
-            >
+            <Text style={styles.loginText}>Already have an account?</Text>
+            <TouchableOpacity onPress={() => router.replace("/login")}>
               <Text style={styles.loginLink}> Login</Text>
             </TouchableOpacity>
           </View>

@@ -1,9 +1,9 @@
-import { View, Text, StyleSheet, Alert } from "react-native";
-import { Button } from "react-native-paper";
-import { ref, set } from "firebase/database";
-import { db } from "../../F2H/app/firebase/firebaseConfig"; // ✅ CORRECT PATH
-import { useRouter } from "expo-router";
 import * as Location from "expo-location";
+import { useRouter } from "expo-router";
+import { ref, set } from "firebase/database";
+import { Alert, StyleSheet, Text, View } from "react-native";
+import { Button } from "react-native-paper";
+import { db } from "../firebase/firebaseConfig"; // ✅ CORRECT PATH
 
 /**
  * CREATE DUMMY ORDER + LIVE LOCATION
@@ -19,7 +19,7 @@ export default function CreateOrderScreen() {
       if (status !== "granted") {
         Alert.alert(
           "Permission required",
-          "Location permission is needed to create order"
+          "Location permission is needed to create order",
         );
         return;
       }
@@ -71,11 +71,7 @@ export default function CreateOrderScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Create Dummy Order</Text>
 
-      <Button
-        mode="contained"
-        onPress={createOrder}
-        style={styles.button}
-      >
+      <Button mode="contained" onPress={createOrder} style={styles.button}>
         Create Order
       </Button>
     </View>

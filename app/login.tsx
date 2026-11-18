@@ -1,19 +1,19 @@
-import { useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-  KeyboardAvoidingView,
-  Platform,
-  Alert,
-} from "react-native";
-import { TextInput, Button, ActivityIndicator } from "react-native-paper";
 import { useRouter } from "expo-router";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { ref, get } from "firebase/database";
-import { auth, db } from "../../F2H/app/firebase/firebaseConfig"; // ✅ FIXED PATH
+import { get, ref } from "firebase/database";
+import { useState } from "react";
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { ActivityIndicator, Button, TextInput } from "react-native-paper";
+import { auth, db } from "../firebase/firebaseConfig"; // ✅ FIXED PATH
 
 /* ❤️ VALENTINE THEME */
 const V = {
@@ -48,7 +48,7 @@ export default function Login() {
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email.trim(),
-        password
+        password,
       );
 
       const user = userCredential.user;
@@ -61,7 +61,7 @@ export default function Login() {
         // ❌ Not a customer
         Alert.alert(
           "Access denied",
-          "This account is not registered as a customer"
+          "This account is not registered as a customer",
         );
         await auth.signOut();
         setLoading(false);
@@ -122,12 +122,7 @@ export default function Login() {
             style={styles.input}
             outlineColor={V.BORDER}
             activeOutlineColor={V.PRIMARY}
-            left={
-              <TextInput.Icon
-                icon="email-outline"
-                color={V.PRIMARY}
-              />
-            }
+            left={<TextInput.Icon icon="email-outline" color={V.PRIMARY} />}
           />
 
           {/* PASSWORD */}
@@ -140,12 +135,7 @@ export default function Login() {
             style={styles.input}
             outlineColor={V.BORDER}
             activeOutlineColor={V.PRIMARY}
-            left={
-              <TextInput.Icon
-                icon="lock-outline"
-                color={V.PRIMARY}
-              />
-            }
+            left={<TextInput.Icon icon="lock-outline" color={V.PRIMARY} />}
             right={
               <TextInput.Icon
                 icon={secure ? "eye-off-outline" : "eye-outline"}
@@ -170,19 +160,13 @@ export default function Login() {
             labelStyle={styles.loginText}
             disabled={loading}
           >
-            {loading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              "Login"
-            )}
+            {loading ? <ActivityIndicator color="#fff" /> : "Login"}
           </Button>
 
           {/* SIGNUP */}
           <View style={styles.signupRow}>
             <Text style={styles.signupText}>Don’t have an account?</Text>
-            <TouchableOpacity
-              onPress={() => router.push("/signup")}
-            >
+            <TouchableOpacity onPress={() => router.push("/signup")}>
               <Text style={styles.signupLink}> Sign up</Text>
             </TouchableOpacity>
           </View>
