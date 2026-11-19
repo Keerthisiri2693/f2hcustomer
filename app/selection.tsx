@@ -20,7 +20,7 @@ export default function Selection() {
             style={styles.roleCard}
           >
             <Image
-              source={require("../assets/images/customer.png")}
+              source={require("../assets/images/customer-fixed.png")}
               style={styles.image}
             />
             <Text style={styles.roleText}>Customer</Text>
