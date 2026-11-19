@@ -1,0 +1,114 @@
+
+name: Build F2H Android Testing APK
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Generate F2H Testing APK
+    runs-on: ubuntu-24.04
+
+    steps:
+      # 1. Checkout source code
+      - name: Checkout source code
+        uses: actions/checkout@v7
+
+      # 2. Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 20
+          cache: npm
+
+      # 3. Setup Java
+      - name: Setup Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      # 4. Setup Android SDK
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v4
+
+      # 5. Install dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # 6. Verify Android project
+      - name: Verify Android project
+        shell: bash
+        run: |
+          set -e
+
+          REQUIRED_FILES=(
+            "android/gradlew"
+            "android/gradle/wrapper/gradle-wrapper.properties"
+            "android/gradle/wrapper/gradle-wrapper.jar"
+            "android/app/build.gradle"
+          )
+
+          for file in "${REQUIRED_FILES[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "ERROR: Missing $file"
+              exit 1
+            fi
+            echo "FOUND: $file"
+          done
+
+          chmod +x android/gradlew
+
+      # 7. Check disk space
+      - name: Check disk space
+        run: df -h
+
+      # 8. Clean Gradle cache
+      - name: Clean Gradle cache
+        run: |
+          rm -rf android/.gradle
+          rm -rf android/build
+          rm -rf android/app/build
+
+      # 9. Build release APK
+      - name: Build release APK
+        working-directory: android
+        run: |
+          ./gradlew assembleRelease \
+            --no-daemon \
+            --no-build-cache \
+            --stacktrace
+
+      # 10. Verify APK
+      - name: Verify APK
+        shell: bash
+        run: |
+          APK_PATH="android/app/build/outputs/apk/release/app-release.apk"
+
+          if [ ! -f "$APK_PATH" ]; then
+            echo "ERROR: APK not found"
+            find android/app/build/outputs -type f || true
+            exit 1
+          fi
+
+          echo "F2H APK generated successfully"
+          ls -lh "$APK_PATH"
+
+      # 11. Upload APK
+      - name: Upload F2H Testing APK
+        uses: actions/upload-artifact@v7
+        with:
+          name: F2H-Testing-APK
+          path: android/app/build/outputs/apk/release/app-release.apk
+          if-no-files-found: error
+          retention-days: 14
+
+      # 12. Build summary
+      - name: Build summary
+        if: always()
+        run: |
+          echo "F2H Android APK workflow finished"
+          df -h
